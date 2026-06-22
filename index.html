@@ -59,6 +59,7 @@
             margin-bottom: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
             border: 1px solid var(--panel-border);
+            transition: all 0.3s ease;
         }
 
         .card-header-flex {
@@ -107,6 +108,7 @@
         .trans-path { fill: none; stroke-width: 1.5; transition: all 0.25s ease; }
         .trans-text { font-size: 11px; font-family: Arial, sans-serif; font-weight: bold; }
         .self-loop-group { opacity: 0; visibility: hidden; transition: opacity 0.2s ease; }
+        .state-text-label { opacity: 0; transition: opacity 0.2s ease; }
 
         .sim-trace-block { font-family: "Courier New", Courier, monospace; font-size: 15px; font-weight: bold; line-height: 1.8; letter-spacing: 2px; white-space: pre; padding: 15px; background: var(--bg-color); border-radius: 6px; border-left: 4px solid var(--primary-color); margin-top: 10px; color: var(--text-color); }
 
@@ -120,55 +122,144 @@
         .sub-toggle-btn { background-color: var(--primary-color); color: white; width: auto; padding: 8px 16px; font-size: 13px; font-weight: bold; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
         .sub-toggle-btn:hover { background-color: var(--primary-hover); }
 
-        
+        .circuit-container > .sub-toggle-btn { display: none !important; }
+
+        #systemOnboardingOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(2.5px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 99999;
+            transition: all 0.3s ease;
+        }
+        .onboarding-card {
+            background: #ffffff; 
+            width: 350px;
+            max-width: 95%;
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 20px 30px rgba(0,0,0,0.4);
+            border: 2px solid #2d3748;
+            position: fixed !important; 
+            transition: top 0.3s ease, left 0.3s ease;
+            z-index: 100002;
+        }
+        .help-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100005;
+        }
+        .help-modal-card {
+            background: #ffffff;
+            width: 420px;
+            max-width: 90%;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+            border: 2px solid #2d3748;
+        }
+        .tour-highlight {
+            position: relative !important;
+            z-index: 100000 !important; 
+            box-shadow: 0 0 30px rgba(49, 130, 206, 0.7) !important;
+            outline: 3px solid var(--primary-color) !important;
+            background-color: var(--card-bg) !important;
+        }
+
+        .print-footer { display: none !important; }
+        @page {
+            size: auto;
+            margin: 0;
+        }
+
         @media print {
+            .state-text-label { opacity: 0; transition: opacity 0.2s ease; }
+            .state-text-label { opacity: 1 !important; }
+            
             body { 
                 background: #ffffff !important; 
                 color: #000000 !important; 
-                padding: 5px !important; 
+                padding: 0 !important;
+                margin: 0 !important;
                 font-family: "Courier New", "MingLiU", monospace !important; 
                 filter: grayscale(100%) !important;
                 -webkit-filter: grayscale(100%) !important;
             }
             
-            .control-bar, .btn-container, .zoom-controls, .sub-toggle-btn, header, .form-group:has(#simXSequence), #txt-simXInput { 
+            .control-bar, .btn-container, .zoom-controls, .sub-toggle-btn, header, .form-group:has(#simXSequence), #txt-simXInput, #systemOnboardingOverlay, .onboarding-card { 
                 display: none !important; 
             }
+            
             .main-layout { display: block !important; }
             
-            /* 去圓角硬派線條 */
-            .card { background: none !important; border: 1px solid #000000 !important; border-radius: 0 !important; box-shadow: none !important; padding: 6px !important; margin-bottom: 8px !important; page-break-inside: avoid; break-inside: avoid; }
+            .student-info-panel, .card {
+                margin-left: 24mm !important;
+                margin-right: 24mm !important;
+            }
+            
+            .student-info-panel {
+                margin-top: 28mm !important;
+            }
+            
+            .card { 
+                background: none !important; 
+                border: 1px solid #000000 !important; 
+                border-radius: 0 !important; 
+                box-shadow: none !important; 
+                padding: 12px !important; 
+                margin-bottom: 20px !important; 
+                page-break-inside: avoid; 
+                break-inside: avoid; 
+            }
+            
+            #card-kmap {
+                page-break-before: always !important;
+                break-before: always !important;
+                margin-top: 28mm !important;
+            }
+            
+            #card-state-diagram {
+                page-break-before: always !important;
+                break-before: always !important;
+                margin-top: 28mm !important;
+            }
+            
+            #card-circuit {
+                page-break-before: always !important;
+                break-before: always !important;
+                margin-top: 28mm !important;
+            }
+            
+            .kmap-container { gap: 8px !important; }
+            .kmap-box { max-width: 155px !important; min-width: 135px !important; padding: 8px !important; }
+            .kmap-box h3 { font-size: 11px !important; margin: 0 0 4px 0 !important; }
+            .kmap-table th, .kmap-table td { width: 26px !important; height: 26px !important; font-size: 11px !important; padding: 0 !important; }
+            .equation-text { font-size: 11px !important; padding: 4px !important; margin-top: 5px !important; }
+
             h2 { color: #000000 !important; border-left: 3px solid #000000 !important; font-size: 13px !important; margin: 0 0 5px 0 !important; padding-left: 6px !important; font-weight: bold !important; }
             table, th, td { border: 1px solid #000000 !important; font-size: 11px !important; color: #000000 !important; background: none !important; padding: 4px !important; }
             th { background-color: #f2f2f2 !important; }
-            
-            /* 表單下拉框強制純文字化 */
             select, select.table-select { appearance: none !important; -webkit-appearance: none !important; -moz-appearance: none !important; border: none !important; background: transparent !important; color: #000000 !important; padding: 0 !important; width: auto !important; font-weight: bold !important; font-family: monospace !important; font-size: 11px !important; text-align: center !important; text-align-last: center !important; pointer-events: none !important; }
-
-            /* 動態列印文字區塊解鎖 */
             .card:has(#printSpecSummary) .form-group { display: none !important; }
             #printSpecSummary { display: block !important; font-size: 11px !important; font-weight: normal !important; color: #000000 !important; margin-bottom: 8px !important; }
             #printSimStart { display: block !important; font-size: 11px !important; font-weight: normal !important; color: #000000 !important; margin-bottom: 6px !important; }
             .sim-trace-block { background: none !important; border: none !important; padding: 0 !important; margin: 5px 0 0 0 !important; font-size: 14px !important; letter-spacing: 1.5px !important; }
-
-            .kmap-box { page-break-inside: avoid !important; break-inside: avoid !important; max-width: 210px !important; }
-
-            /* 🚀 電路圖霸佔整頁，並強制清除網頁互動造成的位移跑版 */
-            .card:has(.circuit-container) { page-break-before: always !important; break-before: always !important; height: 95vh !important; display: flex !important; flex-direction: column !important; }
             .circuit-container { overflow: visible !important; min-height: auto !important; max-height: none !important; flex: 1 !important; width: 100% !important; padding: 0 !important; margin: 10px 0 0 0 !important; }
             .circuit-container svg { width: 100% !important; height: auto !important; max-height: 85vh !important; display: block !important; margin: 0 auto !important; transform: none !important; position: static !important; }
             #circuitInner, #stateDiagInner { transform: none !important; width: 100% !important; height: auto !important; position: static !important; }
-
             .card:has(#stateDiagWrapper) { page-break-inside: avoid !important; break-inside: avoid !important; }
             #stateDiagWrapper { overflow: visible !important; min-height: auto !important; max-height: 230px !important; }
             #stateDiagWrapper svg { max-height: 220px !important; width: auto !important; display: block !important; margin: 0 auto !important; }
-            
-            /* 抹除狀態轉移圖活動節點的高光與粗體 */
             .state-node.active-state circle, .state-node circle { fill: #ffffff !important; stroke: #000000 !important; stroke-width: 1.5px !important; r: 20 !important; filter: none !important; }
             .state-node.active-state text, .state-node text { fill: #000000 !important; font-weight: bold !important; }
             .state-node:hover circle, .state-node.target-hover circle { stroke-dasharray: none !important; stroke: #000000 !important; stroke-width: 1.5px !important; r: 20 !important; }
-
-            /* 確保轉移線段為素色線稿防填黑 */
             svg path.trans-path { fill: none !important; stroke: #000000 !important; stroke-width: 1.5px !important; }
             line, path { stroke: #000000 !important; }
             marker path { fill: none !important; stroke: #000000 !important; stroke-width: 1.5px !important; }
@@ -176,11 +267,37 @@
     </style>
 </head>
 <body>
+<div id="ffHelpModal" class="help-modal-overlay">
+    <div class="help-modal-card">
+        <h3 id="txt-modalTitle" style="margin-top: 0; color: #3182ce; font-size: 18px; border-bottom: 2px solid #cbd5e0; padding-bottom: 8px;">觸發器方程式代號意義</h3>
+        <div style="font-size: 14px; line-height: 1.6; color: #2d3748; max-height: 300px; overflow-y: auto; text-align: left;">
+            <p><b>J、K (JK 觸發器)</b><br>J 代表 Set，當 J=1 且 K=0 時，輸出設定為 1<br>K 代表 Reset，當 J=0 且 K=1 時，輸出重設為 0<br>當 J=1 且 K=1 時，狀態翻轉</p>
+            <p><b>S、R (SR 觸發器)</b><br>S 代表 Set，當 S=1 且 R=0 時，輸出設定為 1<br>R 代表 Reset，當 S=0 且 R=1 時，輸出重設為 0<br>不允許 S=1 且 R=1 同時輸入</p>
+            <p><b>D (D 觸發器)</b><br>D 代表 Data，直通引腳，次狀態的輸出值會完全等於當前輸入的 D 值</p>
+            <p><b>T (T 觸發器)</b><br>T 代表 Toggle，當 T=1 時狀態翻轉，當 T=0 時保持不變</p>
+        </div>
+        <button type="button" id="txt-modalConfirm" onclick="closeFFHelp()" style="margin-top: 15px; padding: 8px 16px; font-size: 13px;">確認</button>
+    </div>
+</div>
+<div id="systemOnboardingOverlay">
+    <div class="onboarding-card">
+        <h3 id="obTitle" style="margin-top: 0; color: #3182ce; font-size: 18px; border-bottom: 2px solid #cbd5e0; padding-bottom: 8px;">歡迎使用電路設計自動化系統</h3>
+        <p id="obContent" style="font-size: 14px; line-height: 1.6; color: #2d3748; min-height: 140px;"></p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px;">
+            <span id="obProgress" style="font-size: 12px; color: #718096; font-weight: bold;">導覽進度：1 / 8</span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span onclick="skipTour()" style="cursor: pointer; color: #a0aec0; font-size: 13px; text-decoration: underline; margin-right: 8px;">跳過導覽</span>
+                <button type="button" id="obPrevBtn" onclick="executePrevTourStep()" style="width: auto; padding: 6px 14px; font-size: 13px; background-color: #718096; display: none;">上一步</button>
+                <button type="button" id="obBtn" onclick="executeNextTourStep()" style="width: auto; padding: 6px 14px; font-size: 13px;">開始基礎教學</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="container">
-    <div class="student-info-panel" style="background: #ffffff; color: #000000; border: 1px solid #000000; padding: 12px 20px; border-radius: 0; margin-bottom: 15px; font-weight: bold; font-size: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: none;">
-        <div>學生姓名 (Student Name)：<span style="color: #000000; font-size: 16px;">蔡以恩</span></div>
-        <div>學生學號 (Student ID)：<span style="color: #000000; font-family: monospace; font-size: 16px;">1140523</span></div>
+    <div class="student-info-panel" style="background: #ffffff; color: #000000; border: 2px solid #000000; padding: 12px 20px; border-radius: 0; margin-bottom: 15px; font-weight: bold; font-size: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: none;">
+        <div><span id="txt-infoName">學生姓名 (Student Name)：</span><span style="color: #000000; font-size: 16px;">蔡以恩</span></div>
+        <div><span id="txt-infoId">學生學號 (Student ID)：</span><span style="color: #000000; font-family: monospace; font-size: 16px;">1140523</span></div>
     </div>
 
     <header>
@@ -195,17 +312,22 @@
 
     <div class="main-layout">
         <div class="left-panel">
-            <div class="card">
+            <div class="card" id="card-spec">
                 <h2 id="txt-cardSpec">系統規格設定</h2>
+                <div class="form-group" id="group-text-input">
+                    <label id="txt-descLabel">題目敘述輸入 (Problem Description)</label>
+                    <textarea id="problemDesc" rows="4" style="width: 95%; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); padding: 8px; border-radius: 4px; font-family: inherit; resize: vertical;" placeholder="例如：設計一個 Mealy 模型，使用 JK 觸發器，包含 3 個狀態..."></textarea>
+                    <button type="button" id="txt-parseBtn" onclick="parseDescription()" style="margin-top: 5px; padding: 8px 12px; font-size: 13px; width: auto; align-self: flex-start;">解析敘述並設定</button>
+                </div>
                 <div class="form-group">
                     <label id="txt-modelTypeLabel">系統模型類型 (Model Type)</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="modelType" value="moore" checked onchange="initStateTable()"> <span id="txt-mooreLabel">Moore Model</span></label>
-                        <label><input type="radio" name="modelType" value="mealy" onchange="initStateTable()"> <span id="txt-mealyLabel">Mealy Model</span></label>
+                        <label><input type="radio" name="modelType" value="moore" onchange="initStateTable()"> <span id="txt-mooreLabel">Moore Model</span></label>
+                        <label><input type="radio" name="modelType" value="mealy" checked onchange="initStateTable()"> <span id="txt-mealyLabel">Mealy Model</span></label>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label id="txt-ffTypeLabel">觸發器類型 (Flip-Flop Type)</label>
+                    <label id="txt-ffTypeLabel">觸發器類型 (Flip-Flop Type) <span onclick="showFFHelp()" style="cursor: pointer; color: #3182ce; font-weight: bold; margin-left: 5px; display: inline-block; border: 1px solid #3182ce; border-radius: 50%; width: 16px; height: 16px; text-align: center; line-height: 16px; font-size: 12px;">?</span></label>
                     <div class="radio-group">
                         <label><input type="radio" name="ffType" value="JK" checked onchange="autoUpdateLogic()"> JK FF</label>
                         <label><input type="radio" name="ffType" value="T" onchange="autoUpdateLogic()"> T FF</label>
@@ -217,8 +339,8 @@
                     <label id="txt-stateCountLabel">狀態數量 (Number of States)</label>
                     <select id="stateCount" onchange="initStateTable()">
                         <option value="2" id="txt-optState2">2 個狀態 (A, B)</option>
-                        <option value="3" id="txt-optState3">3 個狀態 (A, B, C)</option>
-                        <option value="4" selected id="txt-optState4">4 個狀態 (A, B, C, D)</option>
+                        <option value="3" selected id="txt-optState3">3 個狀態 (A, B, C)</option>
+                        <option value="4" id="txt-optState4">4 個狀態 (A, B, C, D)</option>
                         <option value="5" id="txt-optState5">5 個狀態 (A, B, C, D, E)</option>
                         <option value="6" id="txt-optState6">6 個狀態 (A, B, C, D, E, F)</option>
                     </select>
@@ -226,34 +348,34 @@
                 <div id="printSpecSummary" style="display: none;"></div>
             </div>
 
-            <div class="card">
+            <div class="card" id="card-state-table">
                 <h2 id="txt-cardTable">狀態表</h2>
                 <div id="tableWrapper"></div>
                 <div class="btn-container" style="display: flex; gap: 10px; margin-top: 15px;">
                     <button type="button" onclick="triggerManualAnalysis()" id="txt-analyzeBtn" style="flex: 1;">執行分析與生成電路</button>
-                    <button type="button" onclick="window.print()" style="flex: 1; background-color: #2d3748;">匯出 PDF 專題報告</button>
+                    <button type="button" id="txt-printBtn" onclick="window.print()" style="flex: 1; background-color: #2d3748;">匯出 PDF 專題報告</button>
                 </div>
             </div>
         </div>
 
         <div class="right-panel">
-            <div class="card" style="border-left: 5px solid var(--primary-color);">
-                <h2>觸發器輸入方程式化簡總覽</h2>
+            <div class="card" id="card-equations" style="border-left: 5px solid var(--primary-color);">
+                <h2 id="txt-cardEquations">觸發器輸入方程式化簡總覽</h2>
                 <div id="equationsTableWrapper" style="margin-top: 15px;"></div>
             </div>
 
-            <div class="card">
+            <div class="card" id="card-kmap">
                 <h2 id="txt-cardKmap">卡諾圖生成與最簡化布林運算式</h2>
                 <div id="kmapsWrapper" class="kmap-container"></div>
             </div>
 
-            <div class="card">
-                <h2>狀態轉移圖</h2>
+            <div class="card" id="card-state-diagram">
+                <h2 id="txt-cardStateDiag">狀態轉移圖</h2>
                 <div id="stateDiagWrapper" style="overflow-x: auto; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px;"></div>
             </div>
 
-            <div class="card">
-                <h2>時序追蹤模擬測試</h2>
+            <div class="card" id="card-simulation">
+                <h2 id="txt-cardSim">時序追蹤模擬測試</h2>
                 <div class="form-group" style="margin-top: 10px;">
                     <label id="txt-simXInput" style="font-weight: bold;">請輸入序列 x 進行硬體演進測試 (例如: 01111111011011101):</label>
                     <input type="text" id="simXSequence" value="01111111011011101" style="width: 95%; font-family: monospace; font-size:15px; margin-top:5px;" oninput="runTraceSimulation()">
@@ -262,9 +384,9 @@
                 <div id="simTraceResult" class="sim-trace-block"></div>
             </div>
 
-            <div class="card">
+            <div class="card" id="card-circuit">
                 <div class="card-header-flex">
-                    <h2>序向邏輯電路圖</h2>
+                    <h2 id="txt-cardCircuit">序向邏輯電路圖</h2>
                     <button type="button" id="btn-toggleSignals" class="sub-toggle-btn" onclick="toggleSignalText()">切換公式顯示</button>
                 </div>
                 <div class="circuit-container" id="circuitWrapper"></div>
@@ -274,6 +396,148 @@
 </div>
 
 <script>
+    window.tourStep = 0;
+    window.tourData = [
+        { 
+            title: "歡迎使用電路設計自動化系統", 
+            content: "這個工具能幫你自動建立具備記憶功能的智慧電子晶片。就像設計紅綠燈一樣：你只需要指定機器要記住幾種狀態、遇到什麼訊號該怎麼切換，系統就會自動幫你寫出數學公式、並畫出實體電路圖！", 
+            btn: "開始基礎教學",
+            target: null 
+        },
+        { 
+            title: "第一步：設定機器的運作模式 (Model Type)", 
+            content: "在左側的<b>「系統規格設定」</b>中，第一項可以選擇運作模式。這決定了晶片要在什麼時候發出輸出訊號。如果不確定，保持預設的「Moore 模型」即可，它最適合穩定的記憶晶片。", 
+            btn: "下一步",
+            target: "#card-spec" 
+        },
+        { 
+            title: "第二步：選擇底層記憶晶片細胞 (Flip-Flop Type)", 
+            content: "此步驟可以選擇正反器（Flip-Flop），它是晶片內用來儲存記憶的基本細胞。不同細胞有不同的特性：<br><br>• <b>JK 正反器</b>：功能最完整！可以保持記憶、歸零 or 設定。最厲害的是如果輸入雙1訊號，它的記憶會直接顛倒（0變1、1變0）。<br>• <b>T 正反器</b>：專門負責翻轉狀態。訊號為 0 時保持原樣，訊號為 1 時就原地反轉。非常適合用來做算次數的計數器。<br>• <b>D 正反器</b>：最常用、最聽話！外部給什麼訊號，時脈一到它就一字不漏地背下來。就像相機快門按下的瞬間捕捉畫面並鎖定。<br>• <b>SR 正反器</b>：最古老。S代表設定(1)，R代表重設(0)。缺點是如果同時叫它設定又叫它重設（同時給1），內部大腦會發生邏輯衝突而失效。", 
+            btn: "下一步",
+            target: "#card-spec" 
+        },
+        { 
+            title: "第三步：決定需要幾個記憶狀態", 
+            content: "第三項是決定機器有幾種情況。例如自動販賣機可能需要記住『沒投錢、投了5元、投了10元』3種狀態。這裡系統預設 4 個狀態，我們會用 A、B、C、D 來代表它們。", 
+            btn: "下一步",
+            target: "#card-spec" 
+        },
+        { 
+            title: "第四步：填寫機器的運作規則 (狀態表)", 
+            content: "下方的<b>「狀態表」</b>是核心！在這裡你要填寫機器的邏輯：當機器在目前狀態（例如A），如果收到外部訊號 0 或 1，下一步應該跳到哪個狀態（次狀態），以及此時要發出什麼結果（輸出 z）。", 
+            btn: "下一步",
+            target: "#card-state-table" 
+        },
+        { 
+            title: "第五步：一鍵驅動數學與公式化簡", 
+            content: "填好規則後，系統會透過<b>『卡諾圖』</b>這種高階數學方法，自動幫你把複雜的開關規則精簡縮小，計算出最省電、最不佔空間的『最簡布林方程式』！", 
+            btn: "下一步",
+            target: "#card-kmap" 
+        },
+        { 
+            title: "第六步：手動切換與機器時序模擬測試", 
+            content: "在右側的<b>「狀態轉移圖」</b>中，你可以用滑鼠點擊圓圈來手動指定晶片的『初始狀態』。接著，在下方欄位輸入一串連續訊號（如 01101），底下就會像真實晶片通電一樣，即時秀出每一刻大腦細胞（q1, q2）的變化軌跡！", 
+            btn: "下一步",
+            target: "#card-simulation" 
+        },
+        { 
+            title: "第七步：查看自動畫好的實體電子線路圖", 
+            content: "最底下就是這台機器的終極藍圖！系統會把剛剛精簡的方程式，自動繞線、對齊、畫成實體的<b>「序向邏輯電路圖」</b>。你可以隨時點擊「匯出 PDF 專題報告」列印出毫無瑕疵的黑白專題報告交卷。教學結束，請開始自由操作體驗吧！", 
+            btn: "進入系統自由體驗",
+            target: "#card-circuit" 
+        }
+    ];
+
+    window.renderTourStep = function(index) {
+        document.querySelectorAll('.tour-highlight').forEach(el => {
+            el.classList.remove('tour-highlight');
+        });
+
+        if (index < 0 || index >= window.tourData.length) {
+            document.getElementById("systemOnboardingOverlay").style.display = "none";
+            return;
+        }
+
+        window.tourStep = index;
+        const step = window.tourData[index];
+        
+        document.getElementById("obTitle").innerHTML = step.title;
+        document.getElementById("obContent").innerHTML = step.content;
+        document.getElementById("obBtn").innerText = step.btn;
+        document.getElementById("obProgress").innerText = "導覽進度：" + (index + 1) + " / " + window.tourData.length;
+        
+        const prevBtn = document.getElementById("obPrevBtn");
+        if (index === 0) {
+            prevBtn.style.display = "none";
+        } else {
+            prevBtn.style.display = "inline-block";
+        }
+
+        const card = document.querySelector('.onboarding-card');
+        const overlay = document.getElementById('systemOnboardingOverlay');
+        
+        if (step.target) {
+            const targetEl = document.querySelector(step.target);
+            if (targetEl) {
+                targetEl.classList.add('tour-highlight');
+                
+                overlay.style.display = "block";
+                overlay.style.pointerEvents = "none"; 
+                card.style.pointerEvents = "auto";    
+                
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                setTimeout(() => {
+                    const rect = targetEl.getBoundingClientRect();
+                    const cardWidth = 360; 
+                    
+                    let fixedTop = rect.top + (rect.height / 2) - 110; 
+                    let fixedLeft = 0;
+
+                    if (index >= 1 && index <= 4) {
+                        fixedLeft = rect.right + 20; 
+                        if (fixedLeft + cardWidth > window.innerWidth - 20) {
+                            fixedLeft = window.innerWidth - cardWidth - 20;
+                        }
+                    } else {
+                        fixedLeft = rect.left - cardWidth - 40;
+                        fixedTop = rect.top - 60;
+                    }
+
+                    if (window.innerWidth < 1100) {
+                        fixedLeft = window.innerWidth / 2 - (cardWidth / 2);
+                        fixedTop = window.innerHeight - 230; 
+                    }
+
+                    if (fixedTop < 20) fixedTop = 20;
+                    if (fixedTop + 240 > window.innerHeight) fixedTop = window.innerHeight - 260;
+                    if (fixedLeft < 10) fixedLeft = 10;
+                    if (fixedLeft + cardWidth > window.innerWidth - 10) fixedLeft = window.innerWidth - cardWidth - 10;
+
+                    card.style.position = "fixed";
+                    card.style.top = fixedTop + "px";
+                    card.style.left = fixedLeft + "px";
+                    card.style.margin = "0";
+                }, 100);
+            }
+        } else {
+            overlay.style.display = "flex";
+            overlay.style.pointerEvents = "auto";
+            card.style.position = "static";
+            card.style.margin = "auto";
+        }
+    };
+
+    window.executeNextTourStep = function() {
+        window.renderTourStep(window.tourStep + 1);
+    };
+
+    window.executePrevTourStep = function() {
+        if (window.tourStep > 0) {
+            window.renderTourStep(window.tourStep - 1);
+        }
+    };
+
     let currentLang = "zh-TW";
     let showSignalText = false; 
     let globalStateMap = {}; 
@@ -281,6 +545,13 @@
     let zoomPanState = {
         stateDiagWrapper: { scale: 1, x: 0, y: 0 },
         circuitWrapper: { scale: 1, x: 0, y: 0 }
+    };
+
+    window.skipTour = function() {
+        document.getElementById("systemOnboardingOverlay").style.display = "none";
+        document.querySelectorAll('.tour-highlight').forEach(el => {
+            el.classList.remove('tour-highlight');
+        });
     };
 
     if (!window.zoomPanInitialized) {
@@ -318,7 +589,18 @@
             optState2: "2 個狀態 (A, B)", optState3: "3 個狀態 (A, B, C)", optState4: "4 個狀態 (A, B, C, D)", optState5: "5 個狀態 (A, B, C, D, E)", optState6: "6 個狀態 (A, B, C, D, E, F)", 
             cardTable: "狀態表", analyzeBtn: "執行分析與生成電路", cardKmap: "卡諾圖生成與最簡化布林運算式", cardCircuit: "序向邏輯電路圖", 
             presState: "目前狀態", nextState: "次狀態", outputLabel: "輸出 (z)", singleOut: "單一輸出", 
-            loadingText: "正在執行高階防撞拓撲佈線與精確剪枝引擎...", kmapTitle: "卡諾圖", fixedVal: "固定值", toggleBtn: "切換公式顯示" 
+            loadingText: "正在執行高階防撞拓撲佈線與精確剪枝引擎...", kmapTitle: "卡諾圖", fixedVal: "固定值", toggleBtn: "切換公式顯示",
+            cardEquations: "觸發器輸入方程式化簡總覽",
+            cardStateDiag: "狀態轉移圖",
+            cardSim: "時序追蹤模擬測試",
+            simXInput: "請輸入序列 x 進行硬體演進測試 (例如: 01111111011011101):",
+            printBtn: "匯出 PDF 專題報告",
+            infoName: "學生姓名 (Student Name)：",
+            infoId: "學生學號 (Student ID)：",
+            modalTitle: "觸發器方程式代號意義",
+            modalConfirm: "確認",
+            descLabel: "題目敘述輸入 (Problem Description)",
+            parseBtn: "解析敘述並設定"
         },
         "en": { 
             mainTitle: "Sequential Circuit Design Automation System", 
@@ -327,19 +609,41 @@
             optState2: "2 States (A, B)", optState3: "3 States (A, B, C)", optState4: "4 States (A, B, C, D)", optState5: "5 States (A-E)", optState6: "6 States (A-F)", 
             cardTable: "State Table", analyzeBtn: "Execute Analysis & Generate", cardKmap: "K-Map Generation & Boolean Minimization", cardCircuit: "Sequential Circuit Diagram", 
             presState: "Present State", nextState: "Next State", outputLabel: "Output (z)", singleOut: "Single Output", 
-            loadingText: "Executing high-level anti-collision routing and dynamic pruning...", kmapTitle: "K-Map", fixedVal: "Constant", toggleBtn: "Toggle Equations" 
+            loadingText: "Executing high-level anti-collision routing and dynamic pruning...", kmapTitle: "K-Map", fixedVal: "Constant", toggleBtn: "Toggle Equations",
+            cardEquations: "Flip-Flop Input Equations Overview",
+            cardStateDiag: "State Transition Diagram",
+            cardSim: "Timing Trace Simulation Test",
+            simXInput: "Please enter sequence x for hardware evolution testing (e.g., 01111111011011101):",
+            printBtn: "Export PDF Project Report",
+            infoName: "Student Name: ",
+            infoId: "Student ID: ",
+            modalTitle: "Meaning of Flip-Flop Equation Codes",
+            modalConfirm: "Confirm",
+            descLabel: "Problem Description Input",
+            parseBtn: "Parse Description & Set"
         }
     };
 
     function changeLanguage(langCode) {
         currentLang = langCode;
-        const fields = ["mainTitle", "cardSpec", "modelTypeLabel", "mooreLabel", "mealyLabel", "ffTypeLabel", "stateCountLabel", "optState2", "optState3", "optState4", "optState5", "optState6", "cardTable", "analyzeBtn", "cardKmap", "cardCircuit"];
+        const fields = [
+            "mainTitle", "cardSpec", "modelTypeLabel", "mooreLabel", "mealyLabel", 
+            "ffTypeLabel", "stateCountLabel", "optState2", "optState3", "optState4", 
+            "optState5", "optState6", "cardTable", "analyzeBtn", "cardKmap", 
+            "cardCircuit", "cardEquations", "cardStateDiag", "cardSim", "simXInput", 
+            "printBtn", "infoName", "infoId", "modalTitle", "modalConfirm", "descLabel", "parseBtn"
+        ];
         fields.forEach(f => {
             const el = document.getElementById("txt-" + f);
-            if(el) el.innerText = i18n[currentLang][f];
+            if(el) el.innerHTML = i18n[currentLang][f];
         });
         let toggleBtnEl = document.getElementById("btn-toggleSignals");
         if(toggleBtnEl) toggleBtnEl.innerText = i18n[currentLang].toggleBtn;
+        
+        var descEl = document.getElementById("problemDesc");
+        if (descEl) {
+            descEl.placeholder = currentLang === 'en' ? "e.g., Design a Mealy model using JK flip-flops with 3 states..." : "例如：設計一個 Mealy 模型，使用 JK 觸發器，包含 3 個狀態...";
+        }
         initStateTable();
     }
 
@@ -383,23 +687,34 @@
             <tbody>`;
 
         validStates.forEach(st => {
-            let defaultNS1 = validStates.includes('B') ? 'B' : 'A';
+            let defaultNS0 = 'A'; let defaultNS1 = 'A'; let defaultOut0 = '0'; let defaultOut1 = '0';
+
+            if (st === 'A') {
+                defaultNS0 = 'A'; defaultNS1 = 'B'; defaultOut0 = '0'; defaultOut1 = '0';
+            } else if (st === 'B') {
+                defaultNS0 = 'C'; defaultNS1 = 'A'; defaultOut0 = '1'; defaultOut1 = '0';
+            } else if (st === 'C') {
+                defaultNS0 = 'A'; defaultNS1 = 'C'; defaultOut0 = '1'; defaultOut1 = '1';
+            } else {
+                defaultNS1 = validStates.includes('B') ? 'B' : 'A';
+            }
+
             if(modelType === 'moore') {
                 html += `
                 <tr>
                     <td><b>${st}</b></td>
-                    <td><select class="table-select ns-input" data-state="${st}" data-x="0" onchange="autoUpdateLogic()">${getStatesOptions('A')}</select></td>
+                    <td><select class="table-select ns-input" data-state="${st}" data-x="0" onchange="autoUpdateLogic()">${getStatesOptions(defaultNS0)}</select></td>
                     <td><select class="table-select ns-input" data-state="${st}" data-x="1" onchange="autoUpdateLogic()">${getStatesOptions(defaultNS1)}</select></td>
-                    <td><select class="table-select out-input" data-state="${st}" data-x="any" onchange="autoUpdateLogic()">${getOutOptionsHtml('0')}</select></td>
+                    <td><select class="table-select out-input" data-state="${st}" data-x="any" onchange="autoUpdateLogic()">${getOutOptionsHtml(defaultOut0)}</select></td>
                 </tr>`;
             } else {
                 html += `
                 <tr>
                     <td><b>${st}</b></td>
-                    <td><select class="table-select ns-input" data-state="${st}" data-x="0" onchange="autoUpdateLogic()">${getStatesOptions('A')}</select></td>
+                    <td><select class="table-select ns-input" data-state="${st}" data-x="0" onchange="autoUpdateLogic()">${getStatesOptions(defaultNS0)}</select></td>
                     <td><select class="table-select ns-input" data-state="${st}" data-x="1" onchange="autoUpdateLogic()">${getStatesOptions(defaultNS1)}</select></td>
-                    <td><select class="table-select out-input" data-state="${st}" data-x="0" onchange="autoUpdateLogic()">${getOutOptionsHtml('0')}</select></td>
-                    <td><select class="table-select out-input" data-state="${st}" data-x="1" onchange="autoUpdateLogic()">${getOutOptionsHtml('0')}</select></td>
+                    <td><select class="table-select out-input" data-state="${st}" data-x="0" onchange="autoUpdateLogic()">${getOutOptionsHtml(defaultOut0)}</select></td>
+                    <td><select class="table-select out-input" data-state="${st}" data-x="1" onchange="autoUpdateLogic()">${getOutOptionsHtml(defaultOut1)}</select></td>
                 </tr>`;
             }
         });
@@ -462,9 +777,8 @@
         let numFF = (numStates === 2) ? 1 : (numStates <= 4) ? 2 : 3;
         let bitMap = {'A':[0,0,0], 'B':[0,0,1], 'C':[0,1,0], 'D':[0,1,1], 'E':[1,0,0], 'F':[1,0,1]};
 
-        // 建構純文字的列印摘要
         let modelTypeName = (modelType === 'moore') ? (currentLang === 'en' ? 'Moore Model' : 'Moore 模型') : (currentLang === 'en' ? 'Mealy Model' : 'Mealy 模型');
-        let printSpecHtml = `${currentLang === 'en' ? 'System Model' : '系統模型'}：${modelTypeName} ｜ ${currentLang === 'en' ? 'Flip-Flop Type' : '觸發器類型'}：${ffType} FF ｜ ${currentLang === 'en' ? 'Number of States' : '狀態數量'}：${numStates} ${currentLang === 'en' ? 'States' : '個狀態'} (`;
+        let printSpecHtml = `${currentLang === 'en' ? 'System Model: ' : '系統模型：'}${modelTypeName} | ${currentLang === 'en' ? 'Flip-Flop Type: ' : '觸發器類型：'}${ffType} FF | ${currentLang === 'en' ? 'Number of States: ' : '狀態數量：'}${numStates} ${currentLang === 'en' ? 'States' : '個狀態'} (`;
         let stateCodeStrings = [];
         validStates.forEach(st => {
             let b = bitMap[st] || [0,0,0];
@@ -476,7 +790,7 @@
 
         let startBit = bitMap[simStartState] || [0,0,0];
         let startBinaryStr = startBit.slice(3 - numFF).join('');
-        document.getElementById('printSimStart').innerText = (currentLang === 'en' ? `Initial state set to ${simStartState}${startBinaryStr}` : `初始狀態設定為 ${simStartState}${startBinaryStr}`);
+        document.getElementById('printSimStart').innerText = (currentLang === 'en' ? `Initial State: ${simStartState}${startBinaryStr}` : `初始狀態設定為 ${simStartState}${startBinaryStr}`);
 
         function getExcitation(qp, qn) {
             if (ffType === 'JK') {
@@ -509,12 +823,10 @@
         let totalCombinations = Math.pow(2, numFF + 1); 
         
         for(let i=0; i<totalCombinations; i++) {
-            let q1=0, q2=0, q3=0, x=0;
-            let currentStateLabel = '';
+            let q1=0, q2=0, q3=0, x=0; let currentStateLabel = '';
             
             if(numFF === 1) {
-                q1 = (i >> 1) & 1; x = i & 1;
-                currentStateLabel = q1 === 0 ? 'A' : 'B';
+                q1 = (i >> 1) & 1; x = i & 1; currentStateLabel = q1 === 0 ? 'A' : 'B';
             } else if (numFF === 2) {
                 q1 = (i >> 2) & 1; q2 = (i >> 1) & 1; x = i & 1;
                 if(q1===0 && q2===0) currentStateLabel = 'A';
@@ -523,8 +835,7 @@
                 if(q1===1 && q2===1) currentStateLabel = 'D';
             } else { 
                 q1 = (i >> 3) & 1; q2 = (i >> 2) & 1; q3 = (i >> 1) & 1; x = i & 1;
-                let code = (q1<<2) | (q2<<1) | q3;
-                let codeMap = ['A', 'B', 'C', 'D', 'E', 'F'];
+                let code = (q1<<2) | (q2<<1) | q3; let codeMap = ['A', 'B', 'C', 'D', 'E', 'F'];
                 currentStateLabel = codeMap[code] || 'UNUSED';
             }
 
@@ -534,7 +845,8 @@
             }
 
             let nextStateLabel = stateMap[currentStateLabel].next[x];
-            let nBits = bitMap[nextStateLabel] || [0,0,0];
+            let bitMapForLoop = {'A':[0,0,0], 'B':[0,0,1], 'C':[0,1,0], 'D':[0,1,1], 'E':[1,0,0], 'F':[1,0,1]};
+            let nBits = bitMapForLoop[nextStateLabel] || [0,0,0];
             let nq1 = 0, nq2 = 0, nq3 = 0;
             
             if (numFF === 1) { nq1 = nBits[2]; } 
@@ -557,10 +869,15 @@
                 else if(ffType === 'D') { kmapsData['D_1'].push(ex1[0]); kmapsData['D_2'].push(ex2[0]); }
             } else { 
                 let ex1 = getExcitation(q1, nq1); let ex2 = getExcitation(q2, nq2); let ex3 = getExcitation(q3, nq3);
-                if(ffType === 'JK') { kmapsData['J_1'].push(ex1[0]); kmapsData['K_1'].push(ex1[1]); kmapsData['J_2'].push(ex2[0]); kmapsData['K_2'].push(ex2[1]); kmapsData['J_3'].push(ex3[0]); kmapsData['K_3'].push(ex3[1]); } 
-                else if(ffType === 'SR') { kmapsData['S_1'].push(ex1[0]); kmapsData['R_1'].push(ex1[1]); kmapsData['S_2'].push(ex2[0]); kmapsData['R_2'].push(ex2[1]); kmapsData['S_3'].push(ex3[0]); kmapsData['R_3'].push(ex3[1]); } 
-                else if(ffType === 'T') { kmapsData['T_1'].push(ex1[0]); kmapsData['T_2'].push(ex2[0]); kmapsData['T_3'].push(ex3[0]); }
-                else if(ffType === 'D') { kmapsData['D_1'].push(ex1[0]); kmapsData['D_2'].push(ex2[0]); kmapsData['D_3'].push(ex3[0]); }
+                if(ffType === 'JK') { 
+                    kmapsData['J_1'].push(ex1[0]); kmapsData['K_1'].push(ex1[1]); kmapsData['J_2'].push(ex2[0]); kmapsData['K_2'].push(ex2[1]); kmapsData['J_3'].push(ex3[0]); kmapsData['K_3'].push(ex3[1]); 
+                } else if(ffType === 'SR') { 
+                    kmapsData['S_1'].push(ex1[0]); kmapsData['R_1'].push(ex1[1]); kmapsData['S_2'].push(ex2[0]); kmapsData['R_2'].push(ex2[1]); kmapsData['S_3'].push(ex3[0]); kmapsData['R_3'].push(ex3[1]); 
+                } else if(ffType === 'T') { 
+                    kmapsData['T_1'].push(ex1[0]); kmapsData['T_2'].push(ex2[0]); kmapsData['T_3'].push(ex3[0]); 
+                } else if(ffType === 'D') { 
+                    kmapsData['D_1'].push(ex1[0]); kmapsData['D_2'].push(ex2[0]); kmapsData['D_3'].push(ex3[0]); 
+                }
             }
             kmapsData['z'].push(zVal);
         }
@@ -571,15 +888,12 @@
     }
 
     function minimizeBoolean(truthTable, numFF, isMooreOutput=false) {
-        let numVars = isMooreOutput ? numFF : numFF + 1;
-        let activeTable = truthTable;
+        let numVars = isMooreOutput ? numFF : numFF + 1; let activeTable = truthTable;
         if (isMooreOutput) {
-            activeTable = [];
-            let skip = Math.pow(2, numFF + 1);
+            activeTable = []; let skip = Math.pow(2, numFF + 1);
             for(let i=0; i<skip; i+=2) activeTable.push(truthTable[i]);
         }
-        let size = Math.pow(2, numVars);
-        let patterns = [];
+        let size = Math.pow(2, numVars); let patterns = [];
         if(numVars === 1) patterns = [[0],[1],[2]];
         else if(numVars === 2) { for(let a=0; a<3; a++) for(let b=0; b<3; b++) patterns.push([a,b]); } 
         else if(numVars === 3) { for(let a=0; a<3; a++) for(let b=0; b<3; b++) for(let c=0; c<3; c++) patterns.push([a,b,c]); }
@@ -661,11 +975,14 @@
             let table = kmapsData[key];
             let isMooreOut = (key === 'z' && modelType === 'moore');
             let equation = minimizeBoolean(table, numFF, isMooreOut);
-            let boxHtml = `<div class="kmap-box"><h3>【 ${key} 】${T.kmapTitle}</h3>`;
+            
+            let kmapTitleText = currentLang === 'en' ? ' K-Map' : ' 卡諾圖';
+            let boxHtml = `<div class="kmap-box"><h3>【 ${key} 】${kmapTitleText}</h3>`;
             
             if (isMooreOut) {
                 if(numFF === 1) {
-                    boxHtml += `<table class="kmap-table"><tr><th class="kmap-header-cell">q1</th><th>0</th><th>1</th></tr><tr><th>值</th><td>${table[0]}</td><td>${table[2]}</td></table>`;
+                    let thVal = currentLang === 'en' ? 'Value' : '值';
+                    boxHtml += `<table class="kmap-table"><tr><th class="kmap-header-cell">q1</th><th>0</th><th>1</th></tr><tr><th>${thVal}</th><td>${table[0]}</td><td>${table[2]}</td></table>`;
                 } else if (numFF === 2) {
                     boxHtml += `<table class="kmap-table"><tr><th class="kmap-header-cell">q1\\q2</th><th>0</th><th>1</th></tr><tr><th>0</th><td>${table[0]}</td><td>${table[2]}</td></tr><tr><th>1</th><td>${table[4]}</td><td>${table[6]}</td></tr></table>`;
                 } else { 
@@ -676,17 +993,11 @@
                     boxHtml += `<table class="kmap-table"><tr><th class="kmap-header-cell">q1\\x</th><th>0</th><th>1</th></tr><tr><th>0</th><td>${table[0]}</td><td>${table[1]}</td></tr><tr><th>1</th><td>${table[2]}</td><td>${table[3]}</td></tr></table>`;
                 } else if (numFF === 2) { 
                     if (!equation.includes('x')) {
-                        let c00 = table[0] !== 'X' ? table[0] : table[1]; let c01 = table[2] !== 'X' ? table[2] : table[3];
-                        let c10 = table[4] !== 'X' ? table[4] : table[5]; let c11 = table[6] !== 'X' ? table[6] : table[7];
-                        boxHtml += `<table class="kmap-table"><tr><th class="kmap-header-cell">q1\\q2</th><th>0</th><th>1</th></tr><tr><th>0</th><td>${c00}</td><td>${c01}</td></tr><tr><th>1</th><td>${c10}</td><td>${c11}</td></tr></table>`;
+                        boxHtml += `<table class="kmap-table"><tr><th class="kmap-header-cell">q1\\q2</th><th>0</th><th>1</th></tr><tr><th>0</th><td>${table[0] !== 'X' ? table[0] : table[1]}</td><td>${table[2] !== 'X' ? table[2] : table[3]}</td></tr><tr><th>1</th><td>${table[4] !== 'X' ? table[4] : table[5]}</td><td>${table[6] !== 'X' ? table[6] : table[7]}</td></tr></table>`;
                     } else if (!equation.includes('q2')) {
-                        let c00 = table[0] !== 'X' ? table[0] : table[2]; let c01 = table[1] !== 'X' ? table[1] : table[3];
-                        let c10 = table[4] !== 'X' ? table[4] : table[6]; let c11 = table[5] !== 'X' ? table[5] : table[7];
-                        boxHtml += `<table class="kmap-table"><tr><th class="kmap-header-cell">q1\\x</th><th>0</th><th>1</th></tr><tr><th>0</th><td>${c00}</td><td>${c01}</td></tr><tr><th>1</th><td>${c10}</td><td>${c11}</td></tr></table>`;
+                        boxHtml += `<table class="kmap-table"><tr><th class="kmap-header-cell">q1\\x</th><th>0</th><th>1</th></tr><tr><th>0</th><td>${table[0] !== 'X' ? table[0] : table[2]}</td><td>${table[1] !== 'X' ? table[1] : table[3]}</td></tr><tr><th>1</th><td>${table[4] !== 'X' ? table[4] : table[6]}</td><td>${table[5] !== 'X' ? table[5] : table[7]}</td></tr></table>`;
                     } else if (!equation.includes('q1')) {
-                        let c00 = table[0] !== 'X' ? table[0] : table[4]; let c01 = table[1] !== 'X' ? table[1] : table[5];
-                        let c10 = table[2] !== 'X' ? table[2] : table[6]; let c11 = table[3] !== 'X' ? table[3] : table[7];
-                        boxHtml += `<table class="kmap-table"><tr><th class="kmap-header-cell">q2\\x</th><th>0</th><th>1</th></tr><tr><th>0</th><td>${c00}</td><td>${c01}</td></tr><tr><th>1</th><td>${c10}</td><td>${c11}</td></tr></table>`;
+                        boxHtml += `<table class="kmap-table"><tr><th class="kmap-header-cell">q2\\x</th><th>0</th><th>1</th></tr><tr><th>0</th><td>${table[0] !== 'X' ? table[0] : table[4]}</td><td>${table[1] !== 'X' ? table[1] : table[5]}</td></tr><tr><th>1</th><td>${table[2] !== 'X' ? table[2] : table[6]}</td><td>${table[3] !== 'X' ? table[3] : table[7]}</td></tr></table>`;
                     } else {
                         boxHtml += `<table class="kmap-table"><tr><th class="kmap-header-cell">q1q2\\x</th><th>0</th><th>1</th></tr><tr><th>00</th><td>${table[0]}</td><td>${table[1]}</td></tr><tr><th>01</th><td>${table[2]}</td><td>${table[3]}</td></tr><tr><th>11</th><td>${table[6]}</td><td>${table[7]}</td></tr><tr><th>10</th><td>${table[4]}</td><td>${table[5]}</td></tr></table>`;
                     }
@@ -700,12 +1011,17 @@
             wrapper.innerHTML += boxHtml;
         }
 
+        let thFF = currentLang === 'en' ? 'Flip-Flop' : '觸發器 (Flip-Flop)';
+        let thPin = currentLang === 'en' ? 'Input Pin' : '輸入引腳 (Pin)';
+        let thEq = currentLang === 'en' ? 'Simplified Equation' : '最簡布林方程式 (Simplified Equation)';
+        let labelOut = currentLang === 'en' ? 'System Output' : '系統輸出 (Output)';
+
         let eqHtml = `<table>
             <thead>
                 <tr>
-                    <th style="width: 30%;">觸發器 (Flip-Flop)</th>
-                    <th style="width: 25%;">輸入引腳 (Pin)</th>
-                    <th style="text-align: left; padding-left: 15px;">最簡布林方程式 (Simplified Equation)</th>
+                    <th style="width: 30%;">${thFF}</th>
+                    <th style="width: 25%;">${thPin}</th>
+                    <th style="text-align: left; padding-left: 15px;">${thEq}</th>
                 </tr>
             </thead>
             <tbody>`;
@@ -736,40 +1052,41 @@
         
         eqHtml += `
             <tr style="background-color: var(--gate-bg);">
-                <td><b>系統輸出 (Output)</b></td>
+                <td><b>${labelOut}</b></td>
                 <td><b>z</b></td>
                 <td style="font-family: monospace; font-weight: bold; font-size: 14px; text-align: left; padding-left: 15px; color: #e53e3e;">z = ${finalEquations['z']}</td>
             </tr>
         </tbody></table>`;
         
         document.getElementById('equationsTableWrapper').innerHTML = eqHtml;
-        if (renderCircuitFlag || document.getElementById('circuitWrapper').innerHTML === "") { drawCircuitDynamic(finalEquations, numFF); }
+        if (renderCircuitFlag || document.getElementById('circuitWrapper').innerHTML === "" || document.getElementById('circuitWrapper').querySelector('.spinner')) { drawCircuitDynamic(finalEquations, numFF); }
     }
 
     function renderStateDiagramSVG(stateMap, numStates, modelType) {
-        let width = 500; let height = 220; let nodeCoords = {};
+        let width = 600; let height = 300; let nodeCoords = {};
         
         if (numStates === 2) {
-            nodeCoords = { 'A': {x: 130, y: 110}, 'B': {x: 370, y: 110} };
+            nodeCoords = { 'A': {x: 120, y: 150}, 'B': {x: 480, y: 150} };
         } else if (numStates === 3) {
-            nodeCoords = { 'A': {x: 110, y: 65}, 'B': {x: 390, y: 65}, 'C': {x: 250, y: 165} }; height = 230;
+            nodeCoords = { 'A': {x: 120, y: 80}, 'B': {x: 480, y: 80}, 'C': {x: 300, y: 240} }; height = 320;
         } else if (numStates === 4) {
-            nodeCoords = { 'A': {x: 100, y: 55}, 'B': {x: 380, y: 55}, 'C': {x: 380, y: 175}, 'D': {x: 100, y: 175} }; height = 240;
+            nodeCoords = { 'A': {x: 120, y: 70}, 'B': {x: 480, y: 70}, 'C': {x: 480, y: 250}, 'D': {x: 120, y: 250} }; height = 340;
         } else { 
-            nodeCoords = { 'A': {x: 80, y: 55}, 'B': {x: 250, y: 45}, 'C': {x: 420, y: 55}, 'D': {x: 420, y: 175}, 'E': {x: 250, y: 185}, 'F': {x: 80, y: 175} }; height = 240;
+            nodeCoords = { 'A': {x: 90, y: 70}, 'B': {x: 300, y: 60}, 'C': {x: 510, y: 70}, 'D': {x: 510, y: 250}, 'E': {x: 300, y: 260}, 'F': {x: 90, y: 250} }; height = 350;
         }
 
         let svg = `<svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <marker id="arrow-blue" viewBox="0 0 10 10" refX="18" refY="5" markerWidth="6" markerHeight="6" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+                <marker id="arrow-blue" viewBox="0 0 10 10" refX="21" refY="5" markerWidth="6" markerHeight="6" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
                     <path d="M 2 2 L 8 5 L 2 8" fill="none" stroke="#3182ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </marker>
-                <marker id="arrow-green" viewBox="0 0 10 10" refX="18" refY="5" markerWidth="6" markerHeight="6" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+                <marker id="arrow-green" viewBox="0 0 10 10" refX="21" refY="5" markerWidth="6" markerHeight="6" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
                     <path d="M 2 2 L 8 5 L 2 8" fill="none" stroke="#38a169" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </marker>
             </defs>`;
 
         for (let fromSt in nodeCoords) {
+            if (!stateMap[fromSt]) continue; 
             ['0', '1'].forEach(x => {
                 let toSt = stateMap[fromSt].next[x]; if (!nodeCoords[toSt]) return;
                 let p1 = nodeCoords[fromSt]; let p2 = nodeCoords[toSt];
@@ -780,36 +1097,43 @@
                     if (x === '0') {
                         let hX = p1.x - 15; let hY = p1.y - 22;
                         svg += `<g class="self-loop-group self-loop-${fromSt}">
-                            <path d="M ${p1.x-12} ${p1.y-12} C ${hX-35} ${hY-30} ${hX-15} ${hY-50} ${p1.x-3} ${p1.y-20}" fill="none" stroke="${color}" stroke-width="1.8" marker-end="url(#${markerId})"/>
-                            <text x="${p1.x-35}" y="${p1.y-45}" class="trans-text" fill="${color}" text-anchor="middle">x=0${modelType==='moore'?'':`/${stateMap[fromSt].out[x]}`}</text>
+                            <path d="M ${p1.x-12} ${p1.y-12} C ${hX-45} ${hY-35} ${hX-20} ${hY-65} ${p1.x-3} ${p1.y-20}" fill="none" stroke="${color}" stroke-width="1.8" marker-end="url(#${markerId})"/>
+                            <text x="${p1.x-45}" y="${p1.y-55}" class="trans-text" fill="${color}" text-anchor="middle">x=0${modelType==='moore'?'':`/${stateMap[fromSt].out[x]}`}</text>
                         </g>`;
                     } else {
                         let hX = p1.x + 15; let hY = p1.y - 22;
                         svg += `<g class="self-loop-group self-loop-${fromSt}">
-                            <path d="M ${p1.x+3} ${p1.y-20} C ${hX+15} ${hY-50} ${hX+35} ${hY-30} ${p1.x+12} ${p1.y-12}" fill="none" stroke="${color}" stroke-width="1.8" marker-end="url(#${markerId})"/>
-                            <text x="${p1.x+35}" y="${p1.y-45}" class="trans-text" fill="${color}" text-anchor="middle">x=1${modelType==='moore'?'':`/${stateMap[fromSt].out[x]}`}</text>
+                            <path d="M ${p1.x+3} ${p1.y-20} C ${hX+20} ${hY-65} ${hX+45} ${hY-35} ${p1.x+12} ${p1.y-12}" fill="none" stroke="${color}" stroke-width="1.8" marker-end="url(#${markerId})"/>
+                            <text x="${p1.x+45}" y="${p1.y-55}" class="trans-text" fill="${color}" text-anchor="middle">x=1${modelType==='moore'?'':`/${stateMap[fromSt].out[x]}`}</text>
                         </g>`;
                     }
                 } else {
                     let dx = p2.x - p1.x; let dy = p2.y - p1.y; let len = Math.sqrt(dx*dx + dy*dy);
-                    let cx = (p1.x + p2.x) / 2 + (-dy / len * 20); let cy = (p1.y + p2.y) / 2 + (dx / len * 20);
-                    svg += `<path d="M ${p1.x} ${p1.y} Q ${cx} ${cy} ${p2.x} ${p2.y}" class="trans-path path-from-${fromSt}" stroke="${color}" fill="none" marker-end="url(#${markerId})"/>`;
-                    svg += `<text x="${cx}" y="${cy+4}" class="trans-text" fill="${color}" text-anchor="middle">${(modelType === 'moore') ? `x=${x}` : `x=${x}/${stateMap[fromSt].out[x]}`}</text>`;
+                    let isBiDirectional = (stateMap[toSt] && (stateMap[toSt].next['0'] === fromSt || stateMap[toSt].next['1'] === fromSt));
+                    let offsetDist = isBiDirectional ? 38 : 22; 
+                    
+                    let cx = (p1.x + p2.x) / 2 + (-dy / len * offsetDist); let cy = (p1.y + p2.y) / 2 + (dx / len * offsetDist);
+                    let textOffsetX = -dy / len * 16; let textOffsetY = dx / len * 16;
+
+                    svg += `<g class="normal-path-group path-group-from-${fromSt}">
+                        <path d="M ${p1.x} ${p1.y} Q ${cx} ${cy} ${p2.x} ${p2.y}" class="trans-path path-from-${fromSt}" stroke="${color}" fill="none" marker-end="url(#${markerId})"/>
+                        <text x="${cx + textOffsetX}" y="${cy + textOffsetY + 4}" class="trans-text state-text-label" fill="${color}" text-anchor="middle">${(modelType === 'moore') ? `x=${x}` : `x=${x}/${stateMap[fromSt].out[x]}`}</text>
+                    </g>`;
                 }
             });
         }
 
         for (let st in nodeCoords) {
+            if (!stateMap[st]) continue; 
             let p = nodeCoords[st];
             let isActive = (st === simStartState) ? " active-state" : "";
             svg += `<g id="node-${st}" class="state-node${isActive}" onmouseover="highlightNodePaths('${st}', '${stateMap[st].next['0']}', '${stateMap[st].next['1']}', true)" onmouseout="highlightNodePaths('${st}', '${stateMap[st].next['0']}', '${stateMap[st].next['1']}', false)" onclick="selectActiveState('${st}')">
-                <circle cx="${p.x}" cy="${p.y}" r="20"/>
+                <circle cx="${p.x}" cy="${p.y}" r="22"/>
                 <text x="${p.x}" y="${p.y}">${(modelType === 'moore') ? `${st}/${stateMap[st].out['any']}` : st}</text>
             </g>`;
         }
 
         svg += `</svg>`;
-        
         let container = document.getElementById('stateDiagWrapper');
         container.style.position = 'relative'; container.style.overflow = 'hidden'; container.style.cursor = 'grab';
         
@@ -820,7 +1144,6 @@
                 <button type="button" class="sub-toggle-btn" style="padding: 2px 10px; width: auto; font-size:11px;" onclick="handleZoomReset('stateDiagWrapper')">⟲</button>
             </div>
         `;
-        
         let st = zoomPanState['stateDiagWrapper'];
         container.innerHTML = controls + `<div id="stateDiagInner" style="transform: translate(${st.x}px, ${st.y}px) scale(${st.scale}); transform-origin: center center; width: 100%; height: 100%;">${svg}</div>`;
         initDragViewportEvents('stateDiagWrapper');
@@ -830,6 +1153,9 @@
         document.querySelectorAll(`.path-from-${stateLabel}`).forEach(p => { p.style.strokeWidth = isHover ? "3.5px" : "1.5px"; });
         document.querySelectorAll(`.self-loop-${stateLabel}`).forEach(sl => {
             sl.style.opacity = isHover ? "1" : "0"; sl.style.visibility = isHover ? "visible" : "hidden";
+        });
+        document.querySelectorAll(`.path-group-from-${stateLabel} .state-text-label`).forEach(lbl => {
+            lbl.style.opacity = isHover ? "1" : "0";
         });
         if (tgt0) {
             let el0 = document.getElementById(`node-${tgt0}`);
@@ -852,7 +1178,7 @@
         let bitMap = {'A':[0,0,0], 'B':[0,0,1], 'C':[0,1,0], 'D':[0,1,1], 'E':[1,0,0], 'F':[1,0,1]};
         let startBit = bitMap[stateLabel] || [0,0,0];
         let startBinaryStr = startBit.slice(3 - numFF).join('');
-        document.getElementById('printSimStart').innerText = (currentLang === 'en' ? `Initial state set to ${stateLabel}${startBinaryStr}` : `初始狀態設定為 ${stateLabel}${startBinaryStr}`);
+        document.getElementById('printSimStart').innerText = (currentLang === 'en' ? `Initial State: ${stateLabel}${startBinaryStr}` : `初始狀態設定為 ${stateLabel}${startBinaryStr}`);
         
         runTraceSimulation();
     }
@@ -868,11 +1194,9 @@
         let bitMap = {'A':[0,0,0], 'B':[0,0,1], 'C':[0,1,0], 'D':[0,1,1], 'E':[1,0,0], 'F':[1,0,1]};
 
         let numFF = (numStates === 2) ? 1 : (numStates <= 4) ? 2 : 3;
-
         let xRow  = "x      "; let qArrs = [];
         for(let f=1; f<=numFF; f++) { qArrs.push(`q${f}     `); }
-        let zRow  = "z      ";
-        let currentState = simStartState;
+        let zRow  = "z      "; let currentState = simStartState;
 
         if (modelType === "moore") {
             xRow += " -";
@@ -882,8 +1206,7 @@
             zRow += " " + zBit;
 
             for (let i = 0; i < filteredX.length; i++) {
-                let xBit = filteredX[i];
-                xRow += " " + xBit;
+                let xBit = filteredX[i]; xRow += " " + xBit;
                 currentState = globalStateMap[currentState] ? (globalStateMap[currentState].next[xBit] || "A") : "A";
                 let b = bitMap[currentState] || [0,0,0];
                 for(let f=0; f<numFF; f++) { qArrs[f] += " " + b[3 - numFF + f]; }
@@ -897,14 +1220,22 @@
             zRow += (filteredX.length > 0) ? "" : " -";
 
             for (let i = 0; i < filteredX.length; i++) {
-                let xBit = filteredX[i];
-                let zBit = globalStateMap[currentState] ? (globalStateMap[currentState].out[xBit] || "0") : "0";
+                let xBit = filteredX[i]; let zBit = "0";
+                if (globalStateMap[currentState] && globalStateMap[currentState].out) {
+                    if (globalStateMap[currentState].out[xBit] !== undefined) {
+                        zBit = globalStateMap[currentState].out[xBit];
+                    } else if (globalStateMap[currentState].out['any'] !== undefined) {
+                        zBit = globalStateMap[currentState].out['any'];
+                    }
+                }
                 let nextState = globalStateMap[currentState] ? (globalStateMap[currentState].next[xBit] || "A") : "A";
-                xRow += " " + xBit; 
-                zRow += " " + zBit;
-                currentState = nextState;
+                xRow += " " + xBit; zRow += " " + zBit; currentState = nextState;
                 let b = bitMap[currentState] || [0,0,0];
-                for(let f=0; f<numFF; f++) { qArrs[f] += " " + b[3 - numFF + f]; }
+                for(let f=0; f<numFF; f++) { 
+                    let currentBit = b[3 - numFF + f];
+                    currentBit = (currentBit !== undefined) ? currentBit : 0; 
+                    qArrs[f] += " " + currentBit; 
+                }
             }
             if (filteredX.length > 0) { xRow += " -"; zRow += " -"; }
         }
@@ -914,8 +1245,8 @@
     function drawCircuitDynamic(equations, numFF) {
         let ffType = document.querySelector('input[name="ffType"]:checked').value;
         let eqKeys = Object.keys(equations); const T = i18n[currentLang];
-        
         let eqY = {}, eqTextY = {}, yPointer = 40;
+        
         eqKeys.forEach((key) => {
             let eqVal = equations[key].replace(/\s+/g, '');
             let productTerms = (eqVal === "0" || eqVal === "1") ? ["0"] : eqVal.split("+");
@@ -924,6 +1255,7 @@
             eqY[key] = yPointer + 55 + andBlockHeight / 2;
             yPointer += andBlockHeight + 85; 
         });
+        
         let svgWidth = 950; let svgHeight = yPointer + 20;
         let railMaxY = { x: 0, xp: 0, q1: 0, q1p: 0, q2: 0, q2p: 0, q3: 0, q3p: 0 };
         let railMinY = { x: 9999, xp: 9999, q1: 9999, q1p: 9999, q2: 9999, q2p: 9999, q3: 9999, q3p: 9999 };
@@ -943,7 +1275,6 @@
                         if(tok === "q1") railKey = 'q1'; if(tok === "q1'") railKey = 'q1p';
                         if(tok === "q2") railKey = 'q2'; if(tok === "q2'") railKey = 'q2p';
                         if(tok === "q3") railKey = 'q3'; if(tok === "q3'") railKey = 'q3p';
-                        
                         let pinY = andY; if (N > 1) { pinY = andY - Math.max(12, N * 6.5) + 4 + (tokIdx * (2 * Math.max(12, N * 6.5) - 8) / (N - 1)); }
                         railHasConnect[railKey] = true;
                         railMaxY[railKey] = Math.max(railMaxY[railKey], pinY); railMinY[railKey] = Math.min(railMinY[railKey], pinY);
@@ -1000,7 +1331,6 @@
                     let tokens = parseTermTokens(term);
                     let andY = currentCenterY + (index * 62) - ((productTerms.length - 1) * 31);
                     let N = tokens.length; let gateHalfHeight = Math.max(12, N * 6.5); let gateX = 440;
-                    
                     svg += `<path d="M ${gateX} ${andY - gateHalfHeight} L ${gateX+14} ${andY - gateHalfHeight} A ${gateHalfHeight} ${gateHalfHeight} 0 0 1 ${gateX+14} ${andY + gateHalfHeight} L ${gateX} ${andY + gateHalfHeight} Z" fill="var(--gate-bg)" stroke="var(--text-color)" stroke-width="1.2"/>`;
                     tokens.forEach((tok, tokIdx) => {
                         let railX = 40;
@@ -1029,7 +1359,6 @@
                     svg += `<line x1="${andGateOutputsY[0].x}" y1="${andGateOutputsY[0].y}" x2="${targetX}" y2="${currentCenterY}" stroke="var(--text-color)" stroke-width="1.5"/>`;
                 }
             }
-
             if (eqKey === 'z') {
                 svg += `<circle cx="${targetX}" cy="${currentCenterY}" r="3" fill="var(--text-color)"/>`;
                 svg += `<line x1="${targetX}" y1="${currentCenterY}" x2="${targetX+50}" y2="${currentCenterY}" stroke="var(--text-color)" stroke-width="2"/>`;
@@ -1040,7 +1369,6 @@
         let fX = 700; let ffRightEdge = fX + 65;
         for (let f = 1; f <= numFF; f++) {
             let labelQ = `q${f}`; let labelQb = `q${f}'`;
-            
             if (ffType === 'T' || ffType === 'D') {
                 let key = `${ffType}_${f}`;
                 if(eqY[key]) {
@@ -1048,7 +1376,6 @@
                     svg += drawFFBox(fX, yIn - 30, 65, 65, ffType, labelQ, labelQb, `FF ${f}`);
                     svg += `<line x1="650" y1="${yIn}" x2="${fX}" y2="${yIn}" stroke="var(--text-color)" stroke-width="1.5"/>`;
                     svg += drawClockInput(clkX, fX, yIn + 18);
-                    
                     let yQ = yIn - 12; let yQb = yIn + 12;
                     if (f === 1) {
                         if (railHasConnect['q1']) { svg += `<path d="M ${ffRightEdge} ${yQ} L 790 ${yQ} L 790 15 L 120 15" fill="none" stroke="var(--text-color)" stroke-width="1.2"/><circle cx="120" cy="15" r="2.5" fill="var(--text-color)"/>`; }
@@ -1069,7 +1396,6 @@
                     svg += `<line x1="650" y1="${y1}" x2="${fX}" y2="${y1}" stroke="var(--text-color)" stroke-width="1.5"/>`;
                     svg += `<line x1="650" y1="${y2}" x2="${fX}" y2="${y2}" stroke="var(--text-color)" stroke-width="1.5"/>`;
                     svg += drawClockInput(clkX, fX, (y1 + y2) / 2);
-                    
                     if (f === 1) {
                         if (railHasConnect['q1']) { svg += `<path d="M ${ffRightEdge} ${y1} L 790 ${y1} L 790 15 L 120 15" fill="none" stroke="var(--text-color)" stroke-width="1.2"/><circle cx="120" cy="15" r="2.5" fill="var(--text-color)"/>`; }
                         if (railHasConnect['q1p']) { svg += `<path d="M ${ffRightEdge} ${y2} L 805 ${y2} L 805 22 L 160 22" fill="none" stroke="var(--text-color)" stroke-width="1.2"/><circle cx="160" cy="22" r="2.5" fill="var(--text-color)"/>`; }
@@ -1083,10 +1409,10 @@
                 }
             }
         }
-
+        
+        // 🛠️ 關鍵修復點：精確補回缺失的 cContainer DOM 容器變數宣告，徹底瓦解 ReferenceError 當機核心
         let cContainer = document.getElementById('circuitWrapper');
         cContainer.style.position = 'relative'; cContainer.style.overflow = 'hidden'; cContainer.style.cursor = 'grab';
-        
         let cControls = `
             <div class="zoom-controls" style="position: absolute; top: 10px; right: 85px; display: flex; gap: 5px; z-index: 20;">
                 <button type="button" class="sub-toggle-btn" style="padding: 2px 10px; width: auto; font-size:14px;" onclick="handleZoomControl('circuitWrapper', 1.2)">+</button>
@@ -1094,7 +1420,6 @@
                 <button type="button" class="sub-toggle-btn" style="padding: 2px 10px; width: auto; font-size:11px;" onclick="handleZoomReset('circuitWrapper')">⟲</button>
             </div>
         `;
-        
         let cSt = zoomPanState['circuitWrapper'];
         cContainer.innerHTML = cControls + `<div id="circuitInner" style="transform: translate(${cSt.x}px, ${cSt.y}px) scale(${cSt.scale}); transform-origin: center center; width: 100%; height: 100%;">${svg}</div>`;
         initDragViewportEvents('circuitWrapper');
@@ -1141,7 +1466,59 @@
         return tokens;
     }
 
-    window.onload = function() { initStateTable(); };
+    window.parseDescription = function() {
+        var desc = document.getElementById("problemDesc").value.toLowerCase();
+        
+        if (desc.match(/moore/)) {
+            document.querySelector('input[name="modelType"][value="moore"]').checked = true;
+        } else if (desc.match(/mealy/)) {
+            document.querySelector('input[name="modelType"][value="mealy"]').checked = true;
+        }
+        
+        if (desc.match(/jk/)) {
+            document.querySelector('input[name="ffType"][value="JK"]').checked = true;
+        } else if (desc.match(/sr/)) {
+            document.querySelector('input[name="ffType"][value="SR"]').checked = true;
+        } else if (desc.match(/d\s*(-?\s*(ff|flip|flip-flop|正反器|觸發器|型|type))/)) {
+            document.querySelector('input[name="ffType"][value="D"]').checked = true;
+        } else if (desc.match(/t\s*(-?\s*(ff|flip|flip-flop|正反器|觸發器|型|type))/)) {
+            document.querySelector('input[name="ffType"][value="T"]').checked = true;
+        }
+        
+        var numMap = {
+            '2': '2', 'two': '2', '二': '2', '兩': '2',
+            '3': '3', 'three': '3', '三': '3',
+            '4': '4', 'four': '4', '四': '4',
+            '5': '5', 'five': '5', '五': '5',
+            '6': '6', 'six': '6', '六': '6'
+        };
+        
+        var stateRegex = /(two|three|four|five|six|二|兩|三|四|五|六|[2-6])\s*(個|種)?\s*(狀態|state)/g;
+        var match = stateRegex.exec(desc);
+        
+        if (match && match[1]) {
+            var targetValue = numMap[match[1]];
+            if (targetValue) { document.getElementById("stateCount").value = targetValue; }
+        } else {
+            for (var key in numMap) {
+                if (desc.indexOf(key) !== -1) {
+                    if (desc.indexOf("狀態") !== -1 || desc.indexOf("state") !== -1) {
+                        document.getElementById("stateCount").value = numMap[key];
+                        break;
+                    }
+                }
+            }
+        }
+        initStateTable();
+    };
+
+    window.showFFHelp = function() { document.getElementById("ffHelpModal").style.display = "flex"; };
+    window.closeFFHelp = function() { document.getElementById("ffHelpModal").style.display = "none"; };
+
+    window.onload = function() {
+        initStateTable();
+        window.renderTourStep(0);
+    };
 
     function initDragViewportEvents(wrapperId) {
         let wrapper = document.getElementById(wrapperId);
@@ -1159,7 +1536,6 @@
         let state = zoomPanState[wrapperId]; state.scale *= factor;
         if (state.scale < 0.25) state.scale = 0.25;
         if (state.scale > 4.0) state.scale = 4.0;
-        
         let innerId = (wrapperId === 'stateDiagWrapper') ? 'stateDiagInner' : 'circuitInner';
         let inner = document.getElementById(innerId);
         if (inner) { inner.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.scale})`; }
@@ -1172,6 +1548,5 @@
         if (inner) { inner.style.transform = `translate(0px, 0px) scale(1)`; }
     }
 </script>
-
 </body>
 </html>
